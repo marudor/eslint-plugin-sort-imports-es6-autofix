@@ -21,7 +21,11 @@ It accepts the same options as the [original rule](http://eslint.org/docs/rules/
 		"sort-imports-es6"
 	],
 	"rules": {
-		"sort-imports-es6/sort-imports-es6": 2
+		"sort-imports-es6/sort-imports-es6": [2, {
+			"ignoreCase": false,
+			"ignoreMemberSort": false,
+			"memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+		}]
 	}
 }
 ```
