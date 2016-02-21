@@ -162,6 +162,14 @@ ruleTester.run("sort-imports", rule, {
         {
             code: "import React, {Component} from 'react';",
             parserOptions: parserOptions
+        },
+
+        // ensure that a single named import is treated differently from a default import
+        {
+            code:
+            "import {foo} from 'foo';\n" +
+            "import bar from 'bar';",
+            parserOptions: parserOptions
         }
     ],
     invalid: [
@@ -249,6 +257,29 @@ ruleTester.run("sort-imports", rule, {
         },
         {
             code: "import {a, B, c, D} from 'foo.js';",
+            parserOptions: parserOptions,
+            errors: [{
+                message: "Member 'B' of the import declaration should be sorted alphabetically.",
+                type: "ImportSpecifier"
+            }, {
+                message: "Member 'D' of the import declaration should be sorted alphabetically.",
+                type: "ImportSpecifier"
+            }]
+        },
+        // ensure that a single named import is treated differently from a default import
+        {
+            code:
+            "import foo from 'foo';\n" +
+            "import { bar } from 'bar'",
+            parserOptions: parserOptions,
+            errors: [{
+                message: "Expected 'multiple' syntax before 'single' syntax.",
+                type: "ImportDeclaration"
+            }]
+        },
+        // ensure that multiple named imports are sorted even when there's a default import
+        {
+            code: "import foo, {a, B, c, D} from 'foo.js';",
             parserOptions: parserOptions,
             errors: [{
                 message: "Member 'B' of the import declaration should be sorted alphabetically.",

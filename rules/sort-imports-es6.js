@@ -35,7 +35,7 @@ module.exports = function(context) {
             return "none";
         } else if (node.specifiers[0].type === "ImportNamespaceSpecifier") {
             return "all";
-        } else if (node.specifiers.length === 1) {
+        } else if (node.specifiers[0].type === "ImportDefaultSpecifier") {
             return "single";
         } else {
             return "multiple";
