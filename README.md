@@ -13,6 +13,8 @@ This version of the rule fixes that.
 
 It accepts the same options as the [original rule](http://eslint.org/docs/rules/sort-imports), but the `multiple` type corresponds to all named imports (regardless of how many are imported), while the `single` type corresponds only to default imports.
 
+## Usage
+
 `npm i --save-dev eslint-plugin-sort-imports-es6`
 
 ```json
