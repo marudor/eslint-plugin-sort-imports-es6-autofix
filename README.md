@@ -19,15 +19,15 @@ It accepts the same options as the [original rule](http://eslint.org/docs/rules/
 
 ```json
 {
-	"plugins": [
-		"sort-imports-es6"
-	],
-	"rules": {
-		"sort-imports-es6/sort-imports-es6": [2, {
-			"ignoreCase": false,
-			"ignoreMemberSort": false,
-			"memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
-		}]
-	}
+  "plugins": [
+    "sort-imports-es6"
+  ],
+  "rules": {
+    "sort-imports-es6/sort-imports-es6": [2, {
+      "ignoreCase": false,
+      "ignoreMemberSort": false,
+      "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+    }]
+  }
 }
 ```
