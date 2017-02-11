@@ -51,7 +51,9 @@ module.exports = {
             ignoreMemberSort = configuration.ignoreMemberSort || false,
             memberSyntaxSortOrder = configuration.memberSyntaxSortOrder || ["none", "all", "multiple", "single"],
             sourceCode = context.getSourceCode();
-        let previousDeclaration = null;
+        let previousDeclaration = null,
+            initialSource = null,
+            previousDeclarations = [];
 
         /**
          * Gets the used member syntax style.
@@ -96,8 +98,74 @@ module.exports = {
             return null;
         }
 
+        function sortAndFixAllNodes(initial, nodes) {
+          //`${sc.substring(node.range[0], node.range[1])}${sc.substring(previousDeclaration.range[1], node.range[0])}${sc.substring(previousDeclaration.range[0], previousDeclaration.range[1])}`);
+          const rich = nodes.map(node => [node, initial.substring(node.range[0], node.range[1])]);
+          const betweens = nodes.map((node, i) => i !== (nodes.length - 1) ? initial.substring(node.range[1], nodes[i + 1].range[0]) : null).filter(n => n !== null);
+
+          const fixed = rich.map(n => {
+            const node = n[0];
+            if (!ignoreMemberSort) {
+                const importSpecifiers = node.specifiers.filter(specifier => specifier.type === "ImportSpecifier");
+                const getSortableName = ignoreCase ? specifier => specifier.local.name.toLowerCase() : specifier => specifier.local.name;
+                const firstUnsortedIndex = importSpecifiers.map(getSortableName).findIndex((name, index, array) => array[index - 1] > name);
+                if (firstUnsortedIndex !== -1) {
+                  const before = initial.substring(node.range[0], importSpecifiers[0].range[0]);
+                  const after = initial.substring(importSpecifiers[importSpecifiers.length - 1].range[1], node.range[1]);
+
+                  const between = importSpecifiers
+                      // Clone the importSpecifiers array to avoid mutating it
+                      .slice()
+                      // Sort the array into the desired order
+                      .sort((specifierA, specifierB) => {
+                          const aName = getSortableName(specifierA);
+                          const bName = getSortableName(specifierB);
+
+                          return aName > bName ? 1 : -1;
+                      })
+                      // Build a string out of the sorted list of import specifiers and the text between the originals
+                      .reduce((sourceText, specifier, index) => {
+                          const textAfterSpecifier = index === importSpecifiers.length - 1
+                              ? ''
+                              : initial.slice(importSpecifiers[index].range[1], importSpecifiers[index + 1].range[0]);
+
+                          return sourceText + initial.substring(...specifier.range) + textAfterSpecifier;
+                      }, '');
+
+                  return [node, `${before}${between}${after}`];
+                }
+            }
+            return n;
+          });
+
+          const sorted = fixed.sort((a, b) => {
+            const currentMemberSyntaxGroupIndex = getMemberParameterGroupIndex(b[0]),
+                previousMemberSyntaxGroupIndex = getMemberParameterGroupIndex(a[0]);
+            let currentLocalMemberName = getFirstLocalMemberName(b[0]),
+                previousLocalMemberName = getFirstLocalMemberName(a[0]);
+            if (ignoreCase) {
+                previousLocalMemberName = previousLocalMemberName && previousLocalMemberName.toLowerCase();
+                currentLocalMemberName = currentLocalMemberName && currentLocalMemberName.toLowerCase();
+            }
+            if (currentMemberSyntaxGroupIndex !== previousMemberSyntaxGroupIndex) {
+              return (currentMemberSyntaxGroupIndex < previousMemberSyntaxGroupIndex) ? 1 : -1; //-1 doesn't work?!
+            } else if(previousLocalMemberName && currentLocalMemberName) {
+              return ( currentLocalMemberName < previousLocalMemberName) ? 1 : -1; //works
+            }
+            return 0;
+          });
+
+          return sorted.map(n => n[1]).reduce((done, current, i) => (`${done}${i !== 0 ? betweens[i - 1] : ''}${current}`), '');
+
+        }
+
         return {
             ImportDeclaration(node) {
+                if (!initialSource) {
+                  initialSource = sourceCode.getText();
+                }
+                previousDeclarations.push(node);
+
                 if (previousDeclaration) {
                     const currentMemberSyntaxGroupIndex = getMemberParameterGroupIndex(node),
                         previousMemberSyntaxGroupIndex = getMemberParameterGroupIndex(previousDeclaration);
@@ -120,6 +188,9 @@ module.exports = {
                                 data: {
                                     syntaxA: memberSyntaxSortOrder[currentMemberSyntaxGroupIndex],
                                     syntaxB: memberSyntaxSortOrder[previousMemberSyntaxGroupIndex]
+                                },
+                                fix(fixer) {
+                                  return fixer.replaceTextRange([previousDeclarations[0].range[0], node.range[1]], sortAndFixAllNodes(initialSource, previousDeclarations));
                                 }
                             });
                         }
@@ -130,7 +201,10 @@ module.exports = {
                         ) {
                             context.report({
                                 node,
-                                message: "Imports should be sorted alphabetically."
+                                message: "Imports should be sorted alphabetically.",
+                                fix(fixer) {
+                                  return fixer.replaceTextRange([previousDeclarations[0].range[0], node.range[1]], sortAndFixAllNodes(initialSource, previousDeclarations));
+                                }
                             });
                         }
                     }
@@ -154,31 +228,7 @@ module.exports = {
                                     // If there are comments in the ImportSpecifier list, don't rearrange the specifiers.
                                     return null;
                                 }
-
-                                return fixer.replaceTextRange(
-                                    [importSpecifiers[0].range[0], importSpecifiers[importSpecifiers.length - 1].range[1]],
-                                    importSpecifiers
-
-                                        // Clone the importSpecifiers array to avoid mutating it
-                                        .slice()
-
-                                        // Sort the array into the desired order
-                                        .sort((specifierA, specifierB) => {
-                                            const aName = getSortableName(specifierA);
-                                            const bName = getSortableName(specifierB);
-
-                                            return aName > bName ? 1 : -1;
-                                        })
-
-                                        // Build a string out of the sorted list of import specifiers and the text between the originals
-                                        .reduce((sourceText, specifier, index) => {
-                                            const textAfterSpecifier = index === importSpecifiers.length - 1
-                                                ? ""
-                                                : sourceCode.getText().slice(importSpecifiers[index].range[1], importSpecifiers[index + 1].range[0]);
-
-                                            return sourceText + sourceCode.getText(specifier) + textAfterSpecifier;
-                                        }, "")
-                                );
+                                return fixer.replaceTextRange([previousDeclarations[0].range[0], node.range[1]], sortAndFixAllNodes(initialSource, previousDeclarations));
                             }
                         });
                     }

@@ -258,7 +258,7 @@ ruleTester.run("sort-imports", rule, {
             "import * as a from 'foo.js';",
             output:
             "import * as a from 'foo.js';\n" +
-            "import a from 'bar.js';",
+            "import b from 'bar.js';",
             parserOptions: parserOptions,
             options: [{
                 memberSyntaxSortOrder: [ "all", "single", "multiple", "none" ]
@@ -329,6 +329,91 @@ ruleTester.run("sort-imports", rule, {
                 message: "Member 'c' of the import declaration should be sorted alphabetically.",
                 type: "ImportSpecifier"
             }]
+        },
+        //multiline fixing tests
+        {
+            code:
+            "import b from 'bar.js';\n" +
+            "import c from 'baz.js';\n" +
+            "import a from 'foo.js';",
+            output:
+            "import a from 'foo.js';\n" +
+            "import b from 'bar.js';\n" +
+            "import c from 'baz.js';",
+            parserOptions: parserOptions,
+            errors: [expectedError],
+        },
+        {
+            code:
+            "import b from 'bar.js';\n" +
+            "import C from 'baz.js';\n" +
+            "import a from 'foo.js';",
+            output:
+            "import C from 'baz.js';\n" +
+            "import a from 'foo.js';\n" +
+            "import b from 'bar.js';",
+            parserOptions: parserOptions,
+            errors: [expectedError],
+        },
+        {
+            code:
+            "import a from 'bar.js';\n" +
+            "import b from 'baz.js';\n" +
+            "import { c } from 'foo.js';",
+            output:
+            "import { c } from 'foo.js';\n" +
+            "import a from 'bar.js';\n" +
+            "import b from 'baz.js';",
+            parserOptions: parserOptions,
+            errors: [{
+                message: "Expected 'multiple' syntax before 'single' syntax.",
+                type: "ImportDeclaration"
+            }],
+        },
+        {
+            code:
+            "import b from 'baz.js';\n" +
+            "import a from 'bar.js';\n" +
+            "import { c } from 'foo.js';",
+            output:
+            "import { c } from 'foo.js';\n" +
+            "import a from 'bar.js';\n" +
+            "import b from 'baz.js';",
+            parserOptions: parserOptions,
+            errors: [expectedError, {
+                message: "Expected 'multiple' syntax before 'single' syntax.",
+                type: "ImportDeclaration"
+            }],
+        },
+        {
+            code:
+            "import a from 'bar.js';\n" +
+            "import B from 'baz.js';\n" +
+            "import { c } from 'foo.js';",
+            output:
+            "import { c } from 'foo.js';\n" +
+            "import B from 'baz.js';\n" +
+            "import a from 'bar.js';",
+            parserOptions: parserOptions,
+            errors: [expectedError, {
+                message: "Expected 'multiple' syntax before 'single' syntax.",
+                type: "ImportDeclaration"
+            }],
+        },
+        {
+            code:
+            "import B from 'baz.js';\n" +
+            "import * as a from 'bar.js';\n" +
+            "import { c } from 'foo.js';",
+            output:
+            "import * as a from 'bar.js';\n" +
+            "import { c } from 'foo.js';\n" +
+            "import B from 'baz.js';",
+            parserOptions: parserOptions,
+            errors: [{
+                message: "Expected 'all' syntax before 'single' syntax.",
+                type: "ImportDeclaration"
+            }],
         }
     ]
 });
