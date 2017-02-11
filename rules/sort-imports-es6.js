@@ -148,7 +148,7 @@ module.exports = {
                 currentLocalMemberName = currentLocalMemberName && currentLocalMemberName.toLowerCase();
             }
             if (currentMemberSyntaxGroupIndex !== previousMemberSyntaxGroupIndex) {
-              return (currentMemberSyntaxGroupIndex < previousMemberSyntaxGroupIndex) ? 1 : -1; //-1 doesn't work?!
+              return (currentMemberSyntaxGroupIndex < previousMemberSyntaxGroupIndex) ? 1 : -1; //changing -1 to 1 does nothing?!
             } else if(previousLocalMemberName && currentLocalMemberName) {
               return ( currentLocalMemberName < previousLocalMemberName) ? 1 : -1; //works
             }
