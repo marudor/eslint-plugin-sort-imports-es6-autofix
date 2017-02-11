@@ -250,9 +250,6 @@ ruleTester.run("sort-imports", rule, {
             errors: [{
                 message: "Member 'a' of the import declaration should be sorted alphabetically.",
                 type: "ImportSpecifier"
-            }, {
-                message: "Member 'c' of the import declaration should be sorted alphabetically.",
-                type: "ImportSpecifier"
             }]
         },
         {
@@ -260,9 +257,6 @@ ruleTester.run("sort-imports", rule, {
             parserOptions: parserOptions,
             errors: [{
                 message: "Member 'B' of the import declaration should be sorted alphabetically.",
-                type: "ImportSpecifier"
-            }, {
-                message: "Member 'D' of the import declaration should be sorted alphabetically.",
                 type: "ImportSpecifier"
             }]
         },
@@ -283,9 +277,6 @@ ruleTester.run("sort-imports", rule, {
             parserOptions: parserOptions,
             errors: [{
                 message: "Member 'B' of the import declaration should be sorted alphabetically.",
-                type: "ImportSpecifier"
-            }, {
-                message: "Member 'D' of the import declaration should be sorted alphabetically.",
                 type: "ImportSpecifier"
             }]
         }
