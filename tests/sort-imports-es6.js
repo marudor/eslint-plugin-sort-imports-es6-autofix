@@ -414,6 +414,60 @@ ruleTester.run("sort-imports", rule, {
                 message: "Expected 'all' syntax before 'single' syntax.",
                 type: "ImportDeclaration"
             }],
+        },
+        {
+            code:
+            "import _ from 'lodash';\n" +
+            "import { t, a, d } from 'i18next';\n" +
+            "import ClientContext from 'api/Data/ClientContext';\n" +
+            "import ConfirmDelete from 'web/Common/Helper/ConfirmDelete';\n" +
+            "import DataStorage from 'api/DataStorage';\n" +
+            "//comment\n" +
+            "import LocaleOptions from 'api/User/LocaleOptions';\n" +
+            "import moment from 'moment';\n" +
+            "/*multi-line-comment \n"+
+            "import React from 'react';\n" +
+            "import Theme from 'theme';\n" +
+            "multi-line-comment */\n"+
+            "import EmployeePicture from 'web/Controls/EmployeePicture';\n" +
+            "import ToggleableTextarea from 'web/Controls/ToggleableTextarea';\n" +
+            "import UUID from 'uuid-js';\n" +
+            "import * as notificationStorage from 'api/Notification/notificationStorage';\n" +
+            "import DmsDataFactory from 'api/DMS/DmsDataFactory';\n" +
+            "import DocumentUpload from 'web/Controls/DocumentUpload';\n" +
+            "import Loading from 'web/Controls/Loading';\n",
+            output:
+            "import * as notificationStorage from 'api/Notification/notificationStorage';\n" +
+            "import { a, d, t } from 'i18next';\n" +
+            "import _ from 'lodash';\n" +
+            "import ClientContext from 'api/Data/ClientContext';\n" +
+            "import ConfirmDelete from 'web/Common/Helper/ConfirmDelete';\n" +
+            "//comment\n" +
+            "import DataStorage from 'api/DataStorage';\n" +
+            "import DmsDataFactory from 'api/DMS/DmsDataFactory';\n" +
+            "/*multi-line-comment \n"+
+            "import React from 'react';\n" +
+            "import Theme from 'theme';\n" +
+            "multi-line-comment */\n"+
+            "import DocumentUpload from 'web/Controls/DocumentUpload';\n" +
+            "import EmployeePicture from 'web/Controls/EmployeePicture';\n" +
+            "import Loading from 'web/Controls/Loading';\n" +
+            "import LocaleOptions from 'api/User/LocaleOptions';\n" +
+            "import moment from 'moment';\n" +
+            "import ToggleableTextarea from 'web/Controls/ToggleableTextarea';\n" +
+            "import UUID from 'uuid-js';\n",
+            parserOptions: parserOptions,
+            options: ignoreCaseArgs,
+            errors: [{
+                message: "Expected 'multiple' syntax before 'single' syntax.",
+                type: "ImportDeclaration"
+            },{
+                message: "Member 'a' of the import declaration should be sorted alphabetically.",
+                type: "ImportSpecifier"
+            }, expectedError, {
+                message: "Expected 'all' syntax before 'single' syntax.",
+                type: "ImportDeclaration"
+            }],
         }
     ]
 });

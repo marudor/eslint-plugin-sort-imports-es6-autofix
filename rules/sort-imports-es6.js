@@ -53,7 +53,7 @@ module.exports = {
             sourceCode = context.getSourceCode();
         let previousDeclaration = null,
             initialSource = null,
-            previousDeclarations = [];
+            allDeclarations = sourceCode.ast.body.filter(n => n.type === 'ImportDeclaration');
 
         /**
          * Gets the used member syntax style.
@@ -148,9 +148,11 @@ module.exports = {
                 currentLocalMemberName = currentLocalMemberName && currentLocalMemberName.toLowerCase();
             }
             if (currentMemberSyntaxGroupIndex !== previousMemberSyntaxGroupIndex) {
+              const ret = currentMemberSyntaxGroupIndex < previousMemberSyntaxGroupIndex;
               return (currentMemberSyntaxGroupIndex < previousMemberSyntaxGroupIndex) ? 1 : -1; //changing -1 to 1 does nothing?!
             } else if(previousLocalMemberName && currentLocalMemberName) {
-              return ( currentLocalMemberName < previousLocalMemberName) ? 1 : -1; //works
+              const ret = currentLocalMemberName < previousLocalMemberName;
+              return (currentLocalMemberName < previousLocalMemberName) ? 1 : -1; //works
             }
             return 0;
           });
@@ -164,7 +166,6 @@ module.exports = {
                 if (!initialSource) {
                   initialSource = sourceCode.getText();
                 }
-                previousDeclarations.push(node);
 
                 if (previousDeclaration) {
                     const currentMemberSyntaxGroupIndex = getMemberParameterGroupIndex(node),
@@ -190,7 +191,7 @@ module.exports = {
                                     syntaxB: memberSyntaxSortOrder[previousMemberSyntaxGroupIndex]
                                 },
                                 fix(fixer) {
-                                  return fixer.replaceTextRange([previousDeclarations[0].range[0], node.range[1]], sortAndFixAllNodes(initialSource, previousDeclarations));
+                                  return fixer.replaceTextRange([allDeclarations[0].range[0], allDeclarations[allDeclarations.length - 1].range[1]], sortAndFixAllNodes(initialSource, allDeclarations));
                                 }
                             });
                         }
@@ -203,7 +204,7 @@ module.exports = {
                                 node,
                                 message: "Imports should be sorted alphabetically.",
                                 fix(fixer) {
-                                  return fixer.replaceTextRange([previousDeclarations[0].range[0], node.range[1]], sortAndFixAllNodes(initialSource, previousDeclarations));
+                                  return fixer.replaceTextRange([allDeclarations[0].range[0], allDeclarations[allDeclarations.length - 1].range[1]], sortAndFixAllNodes(initialSource, allDeclarations));
                                 }
                             });
                         }
@@ -228,7 +229,7 @@ module.exports = {
                                     // If there are comments in the ImportSpecifier list, don't rearrange the specifiers.
                                     return null;
                                 }
-                                return fixer.replaceTextRange([previousDeclarations[0].range[0], node.range[1]], sortAndFixAllNodes(initialSource, previousDeclarations));
+                                return fixer.replaceTextRange([allDeclarations[0].range[0], allDeclarations[allDeclarations.length - 1].range[1]], sortAndFixAllNodes(initialSource, allDeclarations));
                             }
                         });
                     }
