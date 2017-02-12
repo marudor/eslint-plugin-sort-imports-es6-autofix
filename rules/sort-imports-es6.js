@@ -33,6 +33,10 @@ module.exports = {
                         minItems: 4,
                         maxItems: 4
                     },
+                    typeSortStrategy: {
+                        type: "string",
+                        enum: ["mixed", "before", "after"]
+                    },
                     ignoreMemberSort: {
                         type: "boolean"
                     }
@@ -50,6 +54,7 @@ module.exports = {
             ignoreCase = configuration.ignoreCase || false,
             ignoreMemberSort = configuration.ignoreMemberSort || false,
             memberSyntaxSortOrder = configuration.memberSyntaxSortOrder || ["none", "all", "multiple", "single"],
+            typeSortStrategy = configuration.typeSortStrategy || "after",
             sourceCode = context.getSourceCode();
         let previousDeclaration = null,
             initialSource = null,
@@ -139,14 +144,18 @@ module.exports = {
 
           const sorted = fixed.sort((a, b) => {
             const currentMemberSyntaxGroupIndex = getMemberParameterGroupIndex(b[0]),
-                previousMemberSyntaxGroupIndex = getMemberParameterGroupIndex(a[0]);
+                currentMemberIsType = b[0].importKind && b[0].importKind === 'type',
+                previousMemberSyntaxGroupIndex = getMemberParameterGroupIndex(a[0]),
+                previousMemberIsType = a[0].importKind && a[0].importKind === 'type';
             let currentLocalMemberName = getFirstLocalMemberName(b[0]),
                 previousLocalMemberName = getFirstLocalMemberName(a[0]);
             if (ignoreCase) {
                 previousLocalMemberName = previousLocalMemberName && previousLocalMemberName.toLowerCase();
                 currentLocalMemberName = currentLocalMemberName && currentLocalMemberName.toLowerCase();
             }
-            if (currentMemberSyntaxGroupIndex !== previousMemberSyntaxGroupIndex) {
+            if (typeSortStrategy !== "mixed" && currentMemberIsType !== previousMemberIsType) {
+              return ((currentMemberIsType && typeSortStrategy === "before") || (previousMemberIsType && typeSortStrategy === "after")) ? 1 : -1;
+            } if (currentMemberSyntaxGroupIndex !== previousMemberSyntaxGroupIndex) {
               return (currentMemberSyntaxGroupIndex < previousMemberSyntaxGroupIndex) ? 1 : -1;
             } else if(previousLocalMemberName && currentLocalMemberName) {
               return (currentLocalMemberName < previousLocalMemberName) ? 1 : -1;
@@ -166,7 +175,9 @@ module.exports = {
 
                 if (previousDeclaration) {
                     const currentMemberSyntaxGroupIndex = getMemberParameterGroupIndex(node),
-                        previousMemberSyntaxGroupIndex = getMemberParameterGroupIndex(previousDeclaration);
+                        currentMemberIsType = node.importKind && node.importKind === 'type',
+                        previousMemberSyntaxGroupIndex = getMemberParameterGroupIndex(previousDeclaration),
+                        previousMemberIsType = previousDeclaration.importKind && previousDeclaration.importKind === 'type';
                     let currentLocalMemberName = getFirstLocalMemberName(node),
                         previousLocalMemberName = getFirstLocalMemberName(previousDeclaration);
 
@@ -178,7 +189,20 @@ module.exports = {
                     // When the current declaration uses a different member syntax,
                     // then check if the ordering is correct.
                     // Otherwise, make a default string compare (like rule sort-vars to be consistent) of the first used local member name.
-                    if (currentMemberSyntaxGroupIndex !== previousMemberSyntaxGroupIndex) {
+                    if (typeSortStrategy !== "mixed" && currentMemberIsType !== previousMemberIsType) {
+                        if ((currentMemberIsType && typeSortStrategy === "before") || (previousMemberIsType && typeSortStrategy === "after")) {
+                            context.report({
+                                node: node,
+                                message: "Expected type imports '{{typeSortStrategy}}' all other imports.",
+                                data: {
+                                    typeSortStrategy: typeSortStrategy,
+                                },
+                                fix(fixer) {
+                                  return fixer.replaceTextRange([allDeclarations[0].range[0], allDeclarations[allDeclarations.length - 1].range[1]], sortAndFixAllNodes(initialSource, allDeclarations));
+                                }
+                            });
+                        }
+                    } else if (currentMemberSyntaxGroupIndex !== previousMemberSyntaxGroupIndex) {
                         if (currentMemberSyntaxGroupIndex < previousMemberSyntaxGroupIndex) {
                             context.report({
                                 node: node,

@@ -170,6 +170,30 @@ ruleTester.run("sort-imports", rule, {
             "import {foo} from 'foo';\n" +
             "import bar from 'bar';",
             parserOptions: parserOptions
+        },
+        // ensure that typed imports are in the right place and options are evaluated.
+        {
+            code:
+            "import bar from 'bar'; \n" +
+            "import foo from 'foo';\n" +
+            "import type baz from 'baz';",
+            parserOptions: parserOptions,
+        },
+        {
+            code:
+            "import type foo from 'foo';\n" +
+            "import bar from 'bar'; \n" +
+            "import baz from 'baz';",
+            parserOptions: parserOptions,
+            options: [{typeSortStrategy: "before"}],
+        },
+        {
+            code:
+            "import bar from 'bar'; \n" +
+            "import type baz from 'baz';\n" +
+            "import foo from 'foo';",
+            parserOptions: parserOptions,
+            options: [{typeSortStrategy: "mixed"}],
         }
     ],
     invalid: [
