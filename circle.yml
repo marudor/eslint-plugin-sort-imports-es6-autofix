@@ -1,4 +1,4 @@
 machine:
   node:
-    version: 6.x
+    version: 6
 
