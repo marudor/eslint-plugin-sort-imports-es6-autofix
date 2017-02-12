@@ -99,7 +99,6 @@ module.exports = {
         }
 
         function sortAndFixAllNodes(initial, nodes) {
-          //`${sc.substring(node.range[0], node.range[1])}${sc.substring(previousDeclaration.range[1], node.range[0])}${sc.substring(previousDeclaration.range[0], previousDeclaration.range[1])}`);
           const rich = nodes.map(node => [node, initial.substring(node.range[0], node.range[1])]);
           const betweens = nodes.map((node, i) => i !== (nodes.length - 1) ? initial.substring(node.range[1], nodes[i + 1].range[0]) : null).filter(n => n !== null);
 
@@ -148,11 +147,9 @@ module.exports = {
                 currentLocalMemberName = currentLocalMemberName && currentLocalMemberName.toLowerCase();
             }
             if (currentMemberSyntaxGroupIndex !== previousMemberSyntaxGroupIndex) {
-              const ret = currentMemberSyntaxGroupIndex < previousMemberSyntaxGroupIndex;
-              return (currentMemberSyntaxGroupIndex < previousMemberSyntaxGroupIndex) ? 1 : -1; //changing -1 to 1 does nothing?!
+              return (currentMemberSyntaxGroupIndex < previousMemberSyntaxGroupIndex) ? 1 : -1;
             } else if(previousLocalMemberName && currentLocalMemberName) {
-              const ret = currentLocalMemberName < previousLocalMemberName;
-              return (currentLocalMemberName < previousLocalMemberName) ? 1 : -1; //works
+              return (currentLocalMemberName < previousLocalMemberName) ? 1 : -1;
             }
             return 0;
           });
