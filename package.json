@@ -20,6 +20,7 @@
     "test": "mocha ./tests/*.js"
   },
   "devDependencies": {
+    "babel-eslint": "^7.1.1",
     "mocha": "^3.2.0"
   },
   "license": "MIT",

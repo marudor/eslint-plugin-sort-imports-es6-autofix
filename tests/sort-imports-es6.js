@@ -178,6 +178,7 @@ ruleTester.run("sort-imports", rule, {
             "import foo from 'foo';\n" +
             "import type baz from 'baz';",
             parserOptions: parserOptions,
+            parser: 'babel-eslint',
         },
         {
             code:
@@ -185,6 +186,7 @@ ruleTester.run("sort-imports", rule, {
             "import bar from 'bar'; \n" +
             "import baz from 'baz';",
             parserOptions: parserOptions,
+            parser: 'babel-eslint',
             options: [{typeSortStrategy: "before"}],
         },
         {
@@ -193,6 +195,7 @@ ruleTester.run("sort-imports", rule, {
             "import type baz from 'baz';\n" +
             "import foo from 'foo';",
             parserOptions: parserOptions,
+            parser: 'babel-eslint',
             options: [{typeSortStrategy: "mixed"}],
         }
     ],
