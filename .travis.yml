@@ -1,20 +1,4 @@
-sudo: false
 language: node_js
 node_js:
-  - "5"
-  - "4"
-  - "0.12"
-  - "0.10"
-script: npm test
-branches:
-  only:
-    - master
-    - /^v[0-9]/
-deploy:
-  provider: npm
-  email: 'public@erikdesjardins.io'
-  api_key:
-    secure: EqkfuxNw2QAQSKgkZgJvqvJHroelLlstAENS4niZYif1vS3/A2C+t9jPIVJhtI/YXGY/qDumQFnmaX6GOQaI5IAZjbHNzXpAAVWDArge+6hzjogVJGp11qtKwjc5GJWdIaC97JJkWh4DioUj6P5xEcDI1sIvB9toH3TD6SKtBIybXRwGACiyFasRF8IgZ+Eu710YFgujt1glmdLYRlQRlMvA+NIsKnufkNAIl8MQM7NP1e6ixcT9AHdoxKEWiLyZvrHDpCJ/D9vKBW6R5E33OGYYgapilBNurJwdRHgTVPA+ECusKUrYN1+/xByk2JjKDeUbdb5gLlooboOPOZ6/I31nkV+WLzhVI8J3DliDKV5pCCCl5WOMPl6f8IXemdYhgECeMPr6R1M/v/kyNUrTJgxJtuX5BdEGkSG6eF1jiTBloBgMLuryi61hKOtmquReOWaqtX5XIoyPluRUQUoBmgM7Tgbx7wzoJVOOYG7WoPWl+ZW+gSIk4wKluRhM007qrnOWnLMUO2mo6bo7dQmCszCB06dHLJR7j+CT0AT5xpVjSw95nYo41UIRkh9kmQjUCPxl7IPjNgEJwLURmyYiOAT1HkS/9b8D3lRdbk0jPzryatNS/aEuUwC/zrO8b77KyMspQEQEYVIauduVPUjRlUyfU51XV9K5Nc7GAno2ZIo=
-  on:
-    tags: true
-    node: 5
+  - "6"
+  - "7"
