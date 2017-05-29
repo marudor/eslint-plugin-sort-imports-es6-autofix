@@ -135,7 +135,7 @@ module.exports = {
                               ? ''
                               : initial.slice(importSpecifiers[index].range[1], importSpecifiers[index + 1].range[0]);
 
-                          return sourceText + initial.substring(...specifier.range) + textAfterSpecifier;
+                          return sourceText + initial.substring.apply(initial, specifier.range) + textAfterSpecifier;
                       }, '');
 
                   return [node, `${before}${between}${after}`];
