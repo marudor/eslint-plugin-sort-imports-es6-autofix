@@ -144,9 +144,9 @@ module.exports = {
 
           const sorted = fixed.sort((a, b) => {
             const currentMemberSyntaxGroupIndex = getMemberParameterGroupIndex(b[0]),
-                currentMemberIsType = b[0].importKind && b[0].importKind === 'type',
+                currentMemberIsType = (b[0].importKind && b[0].importKind === 'type') || false,
                 previousMemberSyntaxGroupIndex = getMemberParameterGroupIndex(a[0]),
-                previousMemberIsType = a[0].importKind && a[0].importKind === 'type';
+                previousMemberIsType = (a[0].importKind && a[0].importKind === 'type') || false;
             let currentLocalMemberName = getFirstLocalMemberName(b[0]),
                 previousLocalMemberName = getFirstLocalMemberName(a[0]);
             if (ignoreCase) {
@@ -175,9 +175,9 @@ module.exports = {
 
                 if (previousDeclaration) {
                     const currentMemberSyntaxGroupIndex = getMemberParameterGroupIndex(node),
-                        currentMemberIsType = node.importKind && node.importKind === 'type',
+                        currentMemberIsType = (node.importKind && node.importKind === 'type') || false,
                         previousMemberSyntaxGroupIndex = getMemberParameterGroupIndex(previousDeclaration),
-                        previousMemberIsType = previousDeclaration.importKind && previousDeclaration.importKind === 'type';
+                        previousMemberIsType = (previousDeclaration.importKind && previousDeclaration.importKind === 'type') || false;
                     let currentLocalMemberName = getFirstLocalMemberName(node),
                         previousLocalMemberName = getFirstLocalMemberName(previousDeclaration);
 
@@ -185,6 +185,7 @@ module.exports = {
                         previousLocalMemberName = previousLocalMemberName && previousLocalMemberName.toLowerCase();
                         currentLocalMemberName = currentLocalMemberName && currentLocalMemberName.toLowerCase();
                     }
+                    
 
                     // When the current declaration uses a different member syntax,
                     // then check if the ordering is correct.

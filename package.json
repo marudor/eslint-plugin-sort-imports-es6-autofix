@@ -20,11 +20,11 @@
     "test": "mocha ./tests/*.js"
   },
   "devDependencies": {
-    "babel-eslint": "^7.1.1",
+    "babel-eslint": "^8.2.1",
     "mocha": "^3.2.0"
   },
   "license": "MIT",
   "dependencies": {
-    "eslint": "^3.15.0"
+    "eslint": "^4.15.0"
   }
 }
