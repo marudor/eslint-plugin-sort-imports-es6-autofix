@@ -97,8 +97,10 @@ module.exports = {
          * @returns {?string} the local name of the first imported module.
          */
         function getFirstLocalMemberName(node) {
-            if (node.specifiers[0]) {
+            if (node.specifiers.length) {
                 return node.specifiers[0].local.name;
+            } else {
+                return node.source.value;
             }
             return null;
         }

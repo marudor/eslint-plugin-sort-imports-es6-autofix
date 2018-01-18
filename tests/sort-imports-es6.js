@@ -478,6 +478,22 @@ const fixtures = {
           import ReactDOM from 'react-dom';
           import reducer from './reducers';
           `
+        },
+        {
+          code: `
+          import './axiosDefaults';
+          import './primus';
+          import './cxsRender';
+          `,
+          output: `
+          import './axiosDefaults';
+          import './cxsRender';
+          import './primus';
+          `,
+          errors: [{
+            expectedError,
+          }],
+          options: ignoreCaseArgs,
         }
     ]
 };
