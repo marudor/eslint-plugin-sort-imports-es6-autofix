@@ -105,6 +105,16 @@ module.exports = {
             return null;
         }
 
+        /**
+         * Gets if there are lines (empty or comments) between two nodes
+         * @param {ASTNode} firstNode - the ImportDeclaration node.
+         * @param {ASTNode} secondNode - the ImportDeclaration node.
+         * @returns {boolean} if there are lines between the nodes.
+         */
+        function isLineBetween(firstNode, secondNode) {
+            return firstNode.loc.end.line < secondNode.loc.start.line - 1;
+        }
+
         function sortAndFixAllNodes(initial, nodes) {
           const rich = nodes.map(node => [node, initial.substring(node.range[0], node.range[1])]);
           const betweens = nodes.map((node, i) => i !== (nodes.length - 1) ? initial.substring(node.range[1], nodes[i + 1].range[0]) : null).filter(n => n !== null);
@@ -144,29 +154,48 @@ module.exports = {
             return n;
           });
 
-          const sorted = fixed.sort((a, b) => {
-            const currentMemberSyntaxGroupIndex = getMemberParameterGroupIndex(b[0]),
-                currentMemberIsType = (b[0].importKind && b[0].importKind === 'type') || false,
-                previousMemberSyntaxGroupIndex = getMemberParameterGroupIndex(a[0]),
-                previousMemberIsType = (a[0].importKind && a[0].importKind === 'type') || false;
-            let currentLocalMemberName = getFirstLocalMemberName(b[0]),
-                previousLocalMemberName = getFirstLocalMemberName(a[0]);
-            if (ignoreCase) {
-                previousLocalMemberName = previousLocalMemberName && previousLocalMemberName.toLowerCase();
-                currentLocalMemberName = currentLocalMemberName && currentLocalMemberName.toLowerCase();
-            }
-            if (typeSortStrategy !== "mixed" && currentMemberIsType !== previousMemberIsType) {
-              return ((currentMemberIsType && typeSortStrategy === "before") || (previousMemberIsType && typeSortStrategy === "after")) ? 1 : -1;
-            } if (currentMemberSyntaxGroupIndex !== previousMemberSyntaxGroupIndex) {
-              return (currentMemberSyntaxGroupIndex < previousMemberSyntaxGroupIndex) ? 1 : -1;
-            } else if(previousLocalMemberName && currentLocalMemberName) {
-              return (currentLocalMemberName < previousLocalMemberName) ? 1 : -1;
-            }
-            return 0;
-          });
+          // Group by ImportDeclarations that are consecutive (no lines inbetween)
+          const sections = fixed.reduce((sections, current) => {
+              const lastSection = sections[sections.length - 1];
+              if (lastSection.length === 0) {
+                  lastSection.push(current);
+              } else {
+                  const lastFixed = lastSection[lastSection.length - 1];
+                  if (isLineBetween(lastFixed[0], current[0])) {
+                      sections.push([ current ]);
+                  } else {
+                      lastSection.push(current);
+                  }
+              }
+              return sections;
+          }, [[]])
+
+          // Sort each grouping
+          const sorted = sections.map(section => {
+              return section.sort((a, b) => {
+                const currentMemberSyntaxGroupIndex = getMemberParameterGroupIndex(b[0]),
+                    currentMemberIsType = (b[0].importKind && b[0].importKind === 'type') || false,
+                    previousMemberSyntaxGroupIndex = getMemberParameterGroupIndex(a[0]),
+                    previousMemberIsType = (a[0].importKind && a[0].importKind === 'type') || false;
+                let currentLocalMemberName = getFirstLocalMemberName(b[0]),
+                    previousLocalMemberName = getFirstLocalMemberName(a[0]);
+                if (ignoreCase) {
+                    previousLocalMemberName = previousLocalMemberName && previousLocalMemberName.toLowerCase();
+                    currentLocalMemberName = currentLocalMemberName && currentLocalMemberName.toLowerCase();
+                }
+                if (typeSortStrategy !== "mixed" && currentMemberIsType !== previousMemberIsType) {
+                  return ((currentMemberIsType && typeSortStrategy === "before") || (previousMemberIsType && typeSortStrategy === "after")) ? 1 : -1;
+                } if (currentMemberSyntaxGroupIndex !== previousMemberSyntaxGroupIndex) {
+                  return (currentMemberSyntaxGroupIndex < previousMemberSyntaxGroupIndex) ? 1 : -1;
+                } else if(previousLocalMemberName && currentLocalMemberName) {
+                  return (currentLocalMemberName < previousLocalMemberName) ? 1 : -1;
+                }
+
+                return 0;
+              });
+          }).reduce((a, c) => a.concat(c), []); // Flatten groupings
 
           return sorted.map(n => n[1]).reduce((done, current, i) => (`${done}${i !== 0 ? betweens[i - 1] : ''}${current}`), '');
-
         }
 
         return {
@@ -175,7 +204,7 @@ module.exports = {
                   initialSource = sourceCode.getText();
                 }
 
-                if (previousDeclaration) {
+                if (previousDeclaration && !isLineBetween(previousDeclaration, node)) {
                     const currentMemberSyntaxGroupIndex = getMemberParameterGroupIndex(node),
                         currentMemberIsType = (node.importKind && node.importKind === 'type') || false,
                         previousMemberSyntaxGroupIndex = getMemberParameterGroupIndex(previousDeclaration),
@@ -187,7 +216,6 @@ module.exports = {
                         previousLocalMemberName = previousLocalMemberName && previousLocalMemberName.toLowerCase();
                         currentLocalMemberName = currentLocalMemberName && currentLocalMemberName.toLowerCase();
                     }
-                    
 
                     // When the current declaration uses a different member syntax,
                     // then check if the ordering is correct.

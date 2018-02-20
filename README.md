@@ -13,6 +13,8 @@ This version of the rule fixes that.
 
 It accepts the same options as the [original rule](http://eslint.org/docs/rules/sort-imports), but the `multiple` type corresponds to all named imports (regardless of how many are imported), while the `single` type corresponds only to default imports.
 
+This rule respects whitespace and comments between imports by only looking at the order of (and sorting) consecutive import statements (those without newlines/comments in between them).
+
 This fork also fixes the import order on eslint --fix.
 To avoid problems, it will only switch out the import statements, not comments on the same line, etc.
 
