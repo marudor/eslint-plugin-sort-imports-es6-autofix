@@ -124,7 +124,7 @@ const fixtures = {
             "import * as bar from 'bar.js';\n" +
             "import * as foo from 'foo.js';",
         },
-    
+
         // https://github.com/eslint/eslint/issues/5130
         {
             code:
@@ -132,12 +132,12 @@ const fixtures = {
             "import bar from 'bar';",
             options: ignoreCaseArgs
         },
-    
+
         // https://github.com/eslint/eslint/issues/5305
         {
             code: "import React, {Component} from 'react';",
         },
-    
+
         // ensure that a single named import is treated differently from a default import
         {
             code:
@@ -167,7 +167,27 @@ const fixtures = {
             "import foo from 'foo';",
             options: [{typeSortStrategy: "mixed"}],
             parser: 'babel-eslint',
-        }
+        },
+
+        // ensure that only consecutive (no lines inbetween) imports are sorted
+        {
+            code:
+            "import B from 'foo.js';\n" +
+            "\n" +
+            "import A from 'baz.js';",
+        },
+        {
+            code:
+            "import B from 'foo.js';\n" +
+            "// comment\n" +
+            "import A from 'baz.js';",
+        },
+        {
+            code:
+            "import B from 'foo.js';\n" +
+            "B.something()\n" +
+            "import A from 'baz.js';",
+        },
     ],
     invalid: [
         {
@@ -414,23 +434,23 @@ const fixtures = {
             "import DocumentUpload from 'web/Controls/DocumentUpload';\n" +
             "import Loading from 'web/Controls/Loading';\n",
             output:
-            "import * as notificationStorage from 'api/Notification/notificationStorage';\n" +
             "import { a, d, t } from 'i18next';\n" +
             "import _ from 'lodash';\n" +
             "import ClientContext from 'api/Data/ClientContext';\n" +
             "import ConfirmDelete from 'web/Common/Helper/ConfirmDelete';\n" +
-            "//comment\n" +
             "import DataStorage from 'api/DataStorage';\n" +
-            "import DmsDataFactory from 'api/DMS/DmsDataFactory';\n" +
+            "//comment\n" +
+            "import LocaleOptions from 'api/User/LocaleOptions';\n" +
+            "import moment from 'moment';\n" +
             "/*multi-line-comment \n"+
             "import React from 'react';\n" +
             "import Theme from 'theme';\n" +
             "multi-line-comment */\n"+
+            "import * as notificationStorage from 'api/Notification/notificationStorage';\n" +
+            "import DmsDataFactory from 'api/DMS/DmsDataFactory';\n" +
             "import DocumentUpload from 'web/Controls/DocumentUpload';\n" +
             "import EmployeePicture from 'web/Controls/EmployeePicture';\n" +
             "import Loading from 'web/Controls/Loading';\n" +
-            "import LocaleOptions from 'api/User/LocaleOptions';\n" +
-            "import moment from 'moment';\n" +
             "import ToggleableTextarea from 'web/Controls/ToggleableTextarea';\n" +
             "import UUID from 'uuid-js';\n",
             options: ignoreCaseArgs,
@@ -440,7 +460,7 @@ const fixtures = {
             },{
                 message: "Member 'a' of the import declaration should be sorted alphabetically.",
                 type: "ImportSpecifier"
-            }, expectedError, {
+            }, {
                 message: "Expected 'all' syntax before 'single' syntax.",
                 type: "ImportDeclaration"
             }],
@@ -494,7 +514,24 @@ const fixtures = {
             expectedError,
           }],
           options: ignoreCaseArgs,
-        }
+        },
+
+        // Sort only consecutive imports
+        {
+            code:
+            "import D from 'foo.js';\n" +
+            "import B from 'bar.js';\n" +
+            "\n" +
+            "import A from 'baz.js';",
+            output:
+            "import B from 'bar.js';\n" +
+            "import D from 'foo.js';\n" +
+            "\n" +
+            "import A from 'baz.js';",
+            errors: [{
+              expectedError,
+            }],
+        },
     ]
 };
 
