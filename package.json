@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "babel-eslint": "10.0.1",
-    "mocha": "^3.2.0"
+    "mocha": "^6.0.2"
   },
   "license": "MIT",
   "dependencies": {
