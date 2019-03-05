@@ -532,6 +532,32 @@ const fixtures = {
               expectedError,
             }],
         },
+        {
+            code:
+`
+import { createWriteStream, promises as fs } from 'fs';
+import { nodeCrypto, Random } from 'random-js';
+import { resize } from 'easyimage';
+import archiver from 'archiver';
+import config from './config';
+import path from 'path';
+import crypto from 'crypto';
+`,
+            output:
+`
+import { createWriteStream, promises as fs } from 'fs';
+import { nodeCrypto, Random } from 'random-js';
+import { resize } from 'easyimage';
+import archiver from 'archiver';
+import config from './config';
+import crypto from 'crypto';
+import path from 'path';
+`,
+          options: ignoreCaseArgs,
+          errors: [{
+                expectedError,
+            }],
+        }
     ]
 };
 
@@ -549,3 +575,12 @@ RuleTester.setDefaultConfig({
 });
 ruleTester = new RuleTester();
 ruleTester.run("sort-imports - babel-eslint", rule, fixtures);
+
+RuleTester.setDefaultConfig({
+    parser: '@typescript-eslint/parser',
+    parserOptions: {
+      sourceType: 'module',
+    }
+});
+ruleTester = new RuleTester();
+ruleTester.run("sort-imports - @typescript-eslint/parser", rule, fixtures);
