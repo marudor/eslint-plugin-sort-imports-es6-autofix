@@ -17,13 +17,13 @@
     "test": "mocha ./tests/*.js"
   },
   "devDependencies": {
-    "@typescript-eslint/parser": "^1.4.2",
+    "@typescript-eslint/parser": "^1.10.2",
     "babel-eslint": "10.0.1",
-    "mocha": "^6.0.2",
-    "typescript": "^3.3.3333"
+    "mocha": "^6.1.4",
+    "typescript": "^3.5.1"
   },
   "license": "MIT",
   "dependencies": {
-    "eslint": "^5.14.1"
+    "eslint": "^5.16.0"
   }
 }
