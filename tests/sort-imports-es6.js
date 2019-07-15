@@ -150,7 +150,7 @@ const fixtures = {
             "import bar from 'bar'; \n" +
             "import foo from 'foo';\n" +
             "import type baz from 'baz';",
-            parser: 'babel-eslint',
+            parser: require.resolve('babel-eslint'),
         },
         {
             code:
@@ -158,7 +158,7 @@ const fixtures = {
             "import bar from 'bar'; \n" +
             "import baz from 'baz';",
             options: [{typeSortStrategy: "before"}],
-            parser: 'babel-eslint',
+            parser: require.resolve('babel-eslint'),
         },
         {
             code:
@@ -166,7 +166,7 @@ const fixtures = {
             "import type baz from 'baz';\n" +
             "import foo from 'foo';",
             options: [{typeSortStrategy: "mixed"}],
-            parser: 'babel-eslint',
+            parser: require.resolve('babel-eslint'),
         },
 
         // ensure that only consecutive (no lines inbetween) imports are sorted
@@ -564,6 +564,7 @@ import path from 'path';
 RuleTester.setDefaultConfig({
     parserOptions: {
       sourceType: 'module',
+      ecmaVersion: 6,
     }
 });
 
@@ -571,15 +572,16 @@ var ruleTester = new RuleTester();
 ruleTester.run("sort-imports - esprima", rule, fixtures);
 
 RuleTester.setDefaultConfig({
-    parser: 'babel-eslint'
+    parser: require.resolve('babel-eslint')
 });
 ruleTester = new RuleTester();
 ruleTester.run("sort-imports - babel-eslint", rule, fixtures);
 
 RuleTester.setDefaultConfig({
-    parser: '@typescript-eslint/parser',
+    parser: require.resolve('@typescript-eslint/parser'),
     parserOptions: {
       sourceType: 'module',
+      ecmaVersion: 6,
     }
 });
 ruleTester = new RuleTester();
