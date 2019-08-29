@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-sort-imports-es6-autofix",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "A sort-imports rule that properly distinguishes between ES6 import types.",
   "keywords": [
     "eslint",
