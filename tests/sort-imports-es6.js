@@ -23,72 +23,72 @@ var expectedError = {
     message: "Imports should be sorted alphabetically.",
     type: "ImportDeclaration"
 };
-var ignoreCaseArgs = [{ignoreCase: true}];
+var ignoreCaseArgs = [{ ignoreCase: true }];
 const fixtures = {
     valid: [
         {
             code:
-            "import a from 'foo.js';\n" +
-            "import b from 'bar.js';\n" +
-            "import c from 'baz.js';\n",
+                "import a from 'foo.js';\n" +
+                "import b from 'bar.js';\n" +
+                "import c from 'baz.js';\n",
         },
         {
             code:
-            "import * as B from 'foo.js';\n" +
-            "import A from 'bar.js';",
+                "import * as B from 'foo.js';\n" +
+                "import A from 'bar.js';",
         },
         {
             code:
-            "import * as B from 'foo.js';\n" +
-            "import {a, b} from 'bar.js';",
-          },
-        {
-            code:
-            "import {b, c} from 'bar.js';\n" +
-            "import A from 'foo.js';",
+                "import * as B from 'foo.js';\n" +
+                "import {a, b} from 'bar.js';",
         },
         {
             code:
-            "import A from 'bar.js';\n" +
-            "import {b, c} from 'foo.js';",
+                "import {b, c} from 'bar.js';\n" +
+                "import A from 'foo.js';",
+        },
+        {
+            code:
+                "import A from 'bar.js';\n" +
+                "import {b, c} from 'foo.js';",
             options: [{
-                memberSyntaxSortOrder: [ "single", "multiple", "none", "all" ]
+                memberSyntaxSortOrder: ["single", "multiple", "none", "all"]
             }]
         },
         {
             code:
-            "import {a, b} from 'bar.js';\n" +
-            "import {c} from 'foo.js';",
+                "import {a, b} from 'bar.js';\n" +
+                "import {c} from 'foo.js';",
         },
         {
             code:
-            "import A from 'foo.js';\n" +
-            "import B from 'bar.js';",
+                "import A from 'foo.js';\n" +
+                "import B from 'bar.js';",
         },
         {
             code:
-            "import A from 'foo.js';\n" +
-            "import a from 'bar.js';",
+                "import A from 'foo.js';\n" +
+                "import a from 'bar.js';",
         },
         {
             code:
-            "import a, * as B from 'foo.js';\n" +
-            "import b from 'bar.js';",
+                "import a, * as B from 'foo.js';\n" +
+                "import b from 'bar.js';",
         },
         {
             code:
-            "import 'foo.js';\n" +
-            " import a from 'bar.js';",
+                "import 'foo.js';\n" +
+                " import a from 'bar.js';",
         },
         {
             code:
-            "import B from 'foo.js';\n" +
-            "import a from 'bar.js';",
+                "import B from 'foo.js';\n" +
+                "import a from 'bar.js';",
         },
         {
             code:
-            "import a from 'foo.js';\n" +
-            "import B from 'bar.js';",
+                "import a from 'foo.js';\n" +
+                "import B from 'bar.js';",
             options: ignoreCaseArgs
         },
         {
@@ -115,21 +115,21 @@ const fixtures = {
         },
         {
             code:
-            "import * as a from 'foo.js';\n" +
-            "\n" +
-            "import b from 'bar.js';",
+                "import * as a from 'foo.js';\n" +
+                "\n" +
+                "import b from 'bar.js';",
         },
         {
             code:
-            "import * as bar from 'bar.js';\n" +
-            "import * as foo from 'foo.js';",
+                "import * as bar from 'bar.js';\n" +
+                "import * as foo from 'foo.js';",
         },
 
         // https://github.com/eslint/eslint/issues/5130
         {
             code:
-            "import 'foo';\n" +
-            "import bar from 'bar';",
+                "import 'foo';\n" +
+                "import bar from 'bar';",
             options: ignoreCaseArgs
         },
 
@@ -141,98 +141,98 @@ const fixtures = {
         // ensure that a single named import is treated differently from a default import
         {
             code:
-            "import {foo} from 'foo';\n" +
-            "import bar from 'bar';",
+                "import {foo} from 'foo';\n" +
+                "import bar from 'bar';",
         },
         // ensure that typed imports are in the right place and options are evaluated.
         {
             code:
-            "import bar from 'bar'; \n" +
-            "import foo from 'foo';\n" +
-            "import type baz from 'baz';",
+                "import bar from 'bar'; \n" +
+                "import foo from 'foo';\n" +
+                "import type baz from 'baz';",
             parser: require.resolve('babel-eslint'),
         },
         {
             code:
-            "import type foo from 'foo';\n" +
-            "import bar from 'bar'; \n" +
-            "import baz from 'baz';",
-            options: [{typeSortStrategy: "before"}],
+                "import type foo from 'foo';\n" +
+                "import bar from 'bar'; \n" +
+                "import baz from 'baz';",
+            options: [{ typeSortStrategy: "before" }],
             parser: require.resolve('babel-eslint'),
         },
         {
             code:
-            "import bar from 'bar'; \n" +
-            "import type baz from 'baz';\n" +
-            "import foo from 'foo';",
-            options: [{typeSortStrategy: "mixed"}],
+                "import bar from 'bar'; \n" +
+                "import type baz from 'baz';\n" +
+                "import foo from 'foo';",
+            options: [{ typeSortStrategy: "mixed" }],
             parser: require.resolve('babel-eslint'),
         },
 
         // ensure that only consecutive (no lines inbetween) imports are sorted
         {
             code:
-            "import B from 'foo.js';\n" +
-            "\n" +
-            "import A from 'baz.js';",
+                "import B from 'foo.js';\n" +
+                "\n" +
+                "import A from 'baz.js';",
         },
         {
             code:
-            "import B from 'foo.js';\n" +
-            "// comment\n" +
-            "import A from 'baz.js';",
+                "import B from 'foo.js';\n" +
+                "// comment\n" +
+                "import A from 'baz.js';",
         },
         {
             code:
-            "import B from 'foo.js';\n" +
-            "B.something()\n" +
-            "import A from 'baz.js';",
+                "import B from 'foo.js';\n" +
+                "B.something()\n" +
+                "import A from 'baz.js';",
         },
     ],
     invalid: [
         {
             code:
-            "import a from 'foo.js';\n" +
-            "import A from 'bar.js';",
+                "import a from 'foo.js';\n" +
+                "import A from 'bar.js';",
             output:
-            "import A from 'bar.js';\n" +
-            "import a from 'foo.js';",
+                "import A from 'bar.js';\n" +
+                "import a from 'foo.js';",
             errors: [expectedError],
         },
         {
             code:
-            "import b from 'foo.js';\n" +
-            "import a from 'bar.js';",
+                "import b from 'foo.js';\n" +
+                "import a from 'bar.js';",
             output:
-            "import a from 'bar.js';\n" +
-            "import b from 'foo.js';",
+                "import a from 'bar.js';\n" +
+                "import b from 'foo.js';",
             errors: [expectedError]
         },
         {
             code:
-            "import {b, c} from 'foo.js';\n" +
-            "import {a, d} from 'bar.js';",
+                "import {b, c} from 'foo.js';\n" +
+                "import {a, d} from 'bar.js';",
             output:
-            "import {a, d} from 'bar.js';\n" +
-            "import {b, c} from 'foo.js';",
+                "import {a, d} from 'bar.js';\n" +
+                "import {b, c} from 'foo.js';",
             errors: [expectedError]
         },
         {
             code:
-            "import * as foo from 'foo.js';\n" +
-            "import * as bar from 'bar.js';",
+                "import * as foo from 'foo.js';\n" +
+                "import * as bar from 'bar.js';",
             output:
-            "import * as bar from 'bar.js';\n" +
-            "import * as foo from 'foo.js';",
+                "import * as bar from 'bar.js';\n" +
+                "import * as foo from 'foo.js';",
             errors: [expectedError]
         },
         {
             code:
-            "import a from 'foo.js';\n" +
-            "import {b, c} from 'bar.js';",
+                "import a from 'foo.js';\n" +
+                "import {b, c} from 'bar.js';",
             output:
-            "import {b, c} from 'bar.js';\n" +
-            "import a from 'foo.js';",
+                "import {b, c} from 'bar.js';\n" +
+                "import a from 'foo.js';",
             errors: [{
                 message: "Expected 'multiple' syntax before 'single' syntax.",
                 type: "ImportDeclaration"
@@ -240,11 +240,11 @@ const fixtures = {
         },
         {
             code:
-            "import a from 'foo.js';\n" +
-            "import * as b from 'bar.js';",
+                "import a from 'foo.js';\n" +
+                "import * as b from 'bar.js';",
             output:
-            "import * as b from 'bar.js';\n" +
-            "import a from 'foo.js';",
+                "import * as b from 'bar.js';\n" +
+                "import a from 'foo.js';",
             errors: [{
                 message: "Expected 'all' syntax before 'single' syntax.",
                 type: "ImportDeclaration"
@@ -252,11 +252,11 @@ const fixtures = {
         },
         {
             code:
-            "import a from 'foo.js';\n" +
-            "import 'bar.js';",
+                "import a from 'foo.js';\n" +
+                "import 'bar.js';",
             output:
-            "import 'bar.js';\n" +
-            "import a from 'foo.js';",
+                "import 'bar.js';\n" +
+                "import a from 'foo.js';",
             errors: [{
                 message: "Expected 'none' syntax before 'single' syntax.",
                 type: "ImportDeclaration"
@@ -264,13 +264,13 @@ const fixtures = {
         },
         {
             code:
-            "import b from 'bar.js';\n" +
-            "import * as a from 'foo.js';",
+                "import b from 'bar.js';\n" +
+                "import * as a from 'foo.js';",
             output:
-            "import * as a from 'foo.js';\n" +
-            "import b from 'bar.js';",
+                "import * as a from 'foo.js';\n" +
+                "import b from 'bar.js';",
             options: [{
-                memberSyntaxSortOrder: [ "all", "single", "multiple", "none" ]
+                memberSyntaxSortOrder: ["all", "single", "multiple", "none"]
             }],
             errors: [{
                 message: "Expected 'all' syntax before 'single' syntax.",
@@ -305,11 +305,11 @@ const fixtures = {
         // ensure that a single named import is treated differently from a default import
         {
             code:
-            "import foo from 'foo';\n" +
-            "import { bar } from 'bar';",
+                "import foo from 'foo';\n" +
+                "import { bar } from 'bar';",
             output:
-            "import { bar } from 'bar';\n" +
-            "import foo from 'foo';",
+                "import { bar } from 'bar';\n" +
+                "import foo from 'foo';",
             errors: [{
                 message: "Expected 'multiple' syntax before 'single' syntax.",
                 type: "ImportDeclaration"
@@ -336,35 +336,35 @@ const fixtures = {
         //multiline fixing tests
         {
             code:
-            "import b from 'bar.js';\n" +
-            "import c from 'baz.js';\n" +
-            "import a from 'foo.js';",
+                "import b from 'bar.js';\n" +
+                "import c from 'baz.js';\n" +
+                "import a from 'foo.js';",
             output:
-            "import a from 'foo.js';\n" +
-            "import b from 'bar.js';\n" +
-            "import c from 'baz.js';",
+                "import a from 'foo.js';\n" +
+                "import b from 'bar.js';\n" +
+                "import c from 'baz.js';",
             errors: [expectedError],
         },
         {
             code:
-            "import b from 'bar.js';\n" +
-            "import C from 'baz.js';\n" +
-            "import a from 'foo.js';",
+                "import b from 'bar.js';\n" +
+                "import C from 'baz.js';\n" +
+                "import a from 'foo.js';",
             output:
-            "import C from 'baz.js';\n" +
-            "import a from 'foo.js';\n" +
-            "import b from 'bar.js';",
+                "import C from 'baz.js';\n" +
+                "import a from 'foo.js';\n" +
+                "import b from 'bar.js';",
             errors: [expectedError],
         },
         {
             code:
-            "import a from 'bar.js';\n" +
-            "import b from 'baz.js';\n" +
-            "import { c } from 'foo.js';",
+                "import a from 'bar.js';\n" +
+                "import b from 'baz.js';\n" +
+                "import { c } from 'foo.js';",
             output:
-            "import { c } from 'foo.js';\n" +
-            "import a from 'bar.js';\n" +
-            "import b from 'baz.js';",
+                "import { c } from 'foo.js';\n" +
+                "import a from 'bar.js';\n" +
+                "import b from 'baz.js';",
             errors: [{
                 message: "Expected 'multiple' syntax before 'single' syntax.",
                 type: "ImportDeclaration"
@@ -372,13 +372,13 @@ const fixtures = {
         },
         {
             code:
-            "import b from 'baz.js';\n" +
-            "import a from 'bar.js';\n" +
-            "import { c } from 'foo.js';",
+                "import b from 'baz.js';\n" +
+                "import a from 'bar.js';\n" +
+                "import { c } from 'foo.js';",
             output:
-            "import { c } from 'foo.js';\n" +
-            "import a from 'bar.js';\n" +
-            "import b from 'baz.js';",
+                "import { c } from 'foo.js';\n" +
+                "import a from 'bar.js';\n" +
+                "import b from 'baz.js';",
             errors: [expectedError, {
                 message: "Expected 'multiple' syntax before 'single' syntax.",
                 type: "ImportDeclaration"
@@ -386,13 +386,13 @@ const fixtures = {
         },
         {
             code:
-            "import a from 'bar.js';\n" +
-            "import B from 'baz.js';\n" +
-            "import { c } from 'foo.js';",
+                "import a from 'bar.js';\n" +
+                "import B from 'baz.js';\n" +
+                "import { c } from 'foo.js';",
             output:
-            "import { c } from 'foo.js';\n" +
-            "import B from 'baz.js';\n" +
-            "import a from 'bar.js';",
+                "import { c } from 'foo.js';\n" +
+                "import B from 'baz.js';\n" +
+                "import a from 'bar.js';",
             errors: [expectedError, {
                 message: "Expected 'multiple' syntax before 'single' syntax.",
                 type: "ImportDeclaration"
@@ -400,13 +400,13 @@ const fixtures = {
         },
         {
             code:
-            "import B from 'baz.js';\n" +
-            "import * as a from 'bar.js';\n" +
-            "import { c } from 'foo.js';",
+                "import B from 'baz.js';\n" +
+                "import * as a from 'bar.js';\n" +
+                "import { c } from 'foo.js';",
             output:
-            "import * as a from 'bar.js';\n" +
-            "import { c } from 'foo.js';\n" +
-            "import B from 'baz.js';",
+                "import * as a from 'bar.js';\n" +
+                "import { c } from 'foo.js';\n" +
+                "import B from 'baz.js';",
             errors: [{
                 message: "Expected 'all' syntax before 'single' syntax.",
                 type: "ImportDeclaration"
@@ -414,50 +414,50 @@ const fixtures = {
         },
         {
             code:
-            "import _ from 'lodash';\n" +
-            "import { t, a, d } from 'i18next';\n" +
-            "import ClientContext from 'api/Data/ClientContext';\n" +
-            "import ConfirmDelete from 'web/Common/Helper/ConfirmDelete';\n" +
-            "import DataStorage from 'api/DataStorage';\n" +
-            "//comment\n" +
-            "import LocaleOptions from 'api/User/LocaleOptions';\n" +
-            "import moment from 'moment';\n" +
-            "/*multi-line-comment \n"+
-            "import React from 'react';\n" +
-            "import Theme from 'theme';\n" +
-            "multi-line-comment */\n"+
-            "import EmployeePicture from 'web/Controls/EmployeePicture';\n" +
-            "import ToggleableTextarea from 'web/Controls/ToggleableTextarea';\n" +
-            "import UUID from 'uuid-js';\n" +
-            "import * as notificationStorage from 'api/Notification/notificationStorage';\n" +
-            "import DmsDataFactory from 'api/DMS/DmsDataFactory';\n" +
-            "import DocumentUpload from 'web/Controls/DocumentUpload';\n" +
-            "import Loading from 'web/Controls/Loading';\n",
+                "import _ from 'lodash';\n" +
+                "import { t, a, d } from 'i18next';\n" +
+                "import ClientContext from 'api/Data/ClientContext';\n" +
+                "import ConfirmDelete from 'web/Common/Helper/ConfirmDelete';\n" +
+                "import DataStorage from 'api/DataStorage';\n" +
+                "//comment\n" +
+                "import LocaleOptions from 'api/User/LocaleOptions';\n" +
+                "import moment from 'moment';\n" +
+                "/*multi-line-comment \n" +
+                "import React from 'react';\n" +
+                "import Theme from 'theme';\n" +
+                "multi-line-comment */\n" +
+                "import EmployeePicture from 'web/Controls/EmployeePicture';\n" +
+                "import ToggleableTextarea from 'web/Controls/ToggleableTextarea';\n" +
+                "import UUID from 'uuid-js';\n" +
+                "import * as notificationStorage from 'api/Notification/notificationStorage';\n" +
+                "import DmsDataFactory from 'api/DMS/DmsDataFactory';\n" +
+                "import DocumentUpload from 'web/Controls/DocumentUpload';\n" +
+                "import Loading from 'web/Controls/Loading';\n",
             output:
-            "import { a, d, t } from 'i18next';\n" +
-            "import _ from 'lodash';\n" +
-            "import ClientContext from 'api/Data/ClientContext';\n" +
-            "import ConfirmDelete from 'web/Common/Helper/ConfirmDelete';\n" +
-            "import DataStorage from 'api/DataStorage';\n" +
-            "//comment\n" +
-            "import LocaleOptions from 'api/User/LocaleOptions';\n" +
-            "import moment from 'moment';\n" +
-            "/*multi-line-comment \n"+
-            "import React from 'react';\n" +
-            "import Theme from 'theme';\n" +
-            "multi-line-comment */\n"+
-            "import * as notificationStorage from 'api/Notification/notificationStorage';\n" +
-            "import DmsDataFactory from 'api/DMS/DmsDataFactory';\n" +
-            "import DocumentUpload from 'web/Controls/DocumentUpload';\n" +
-            "import EmployeePicture from 'web/Controls/EmployeePicture';\n" +
-            "import Loading from 'web/Controls/Loading';\n" +
-            "import ToggleableTextarea from 'web/Controls/ToggleableTextarea';\n" +
-            "import UUID from 'uuid-js';\n",
+                "import { a, d, t } from 'i18next';\n" +
+                "import _ from 'lodash';\n" +
+                "import ClientContext from 'api/Data/ClientContext';\n" +
+                "import ConfirmDelete from 'web/Common/Helper/ConfirmDelete';\n" +
+                "import DataStorage from 'api/DataStorage';\n" +
+                "//comment\n" +
+                "import LocaleOptions from 'api/User/LocaleOptions';\n" +
+                "import moment from 'moment';\n" +
+                "/*multi-line-comment \n" +
+                "import React from 'react';\n" +
+                "import Theme from 'theme';\n" +
+                "multi-line-comment */\n" +
+                "import * as notificationStorage from 'api/Notification/notificationStorage';\n" +
+                "import DmsDataFactory from 'api/DMS/DmsDataFactory';\n" +
+                "import DocumentUpload from 'web/Controls/DocumentUpload';\n" +
+                "import EmployeePicture from 'web/Controls/EmployeePicture';\n" +
+                "import Loading from 'web/Controls/Loading';\n" +
+                "import ToggleableTextarea from 'web/Controls/ToggleableTextarea';\n" +
+                "import UUID from 'uuid-js';\n",
             options: ignoreCaseArgs,
             errors: [{
                 message: "Expected 'multiple' syntax before 'single' syntax.",
                 type: "ImportDeclaration"
-            },{
+            }, {
                 message: "Member 'a' of the import declaration should be sorted alphabetically.",
                 type: "ImportSpecifier"
             }, {
@@ -465,76 +465,72 @@ const fixtures = {
                 type: "ImportDeclaration"
             }],
         }, {
-          code: `
-          import './axiosDefaults';
-          import './primus';
-          import { Provider } from 'react-redux';
-          import './cxsRender';
-          import * as React from 'react';
-          import { applyMiddleware, compose, createStore } from 'redux';
-          import App from './Components/App';
-          import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-          import ReactDOM from 'react-dom';
-          import injectTapEventPlugin from 'react-tap-event-plugin';
-          import promiseMiddleware from 'redux-promise';
-          import reducer from './reducers';
-          `,
-          options: ignoreCaseArgs,
-          errors: [{
-              message: "Expected 'none' syntax before 'multiple' syntax.",
-              type: "ImportDeclaration"
-          }, expectedError],
-          output: `
-          import './axiosDefaults';
-          import './cxsRender';
-          import './primus';
-          import * as React from 'react';
-          import { applyMiddleware, compose, createStore } from 'redux';
-          import { Provider } from 'react-redux';
-          import App from './Components/App';
-          import injectTapEventPlugin from 'react-tap-event-plugin';
-          import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-          import promiseMiddleware from 'redux-promise';
-          import ReactDOM from 'react-dom';
-          import reducer from './reducers';
-          `
+            code: `
+            import './axiosDefaults';
+            import './primus';
+            import { Provider } from 'react-redux';
+            import './cxsRender';
+            import * as React from 'react';
+            import { applyMiddleware, compose, createStore } from 'redux';
+            import App from './Components/App';
+            import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+            import ReactDOM from 'react-dom';
+            import injectTapEventPlugin from 'react-tap-event-plugin';
+            import promiseMiddleware from 'redux-promise';
+            import reducer from './reducers';
+            `,
+            options: ignoreCaseArgs,
+            errors: [{
+                message: "Expected 'none' syntax before 'multiple' syntax.",
+                type: "ImportDeclaration"
+            }, expectedError],
+            output: `
+            import './axiosDefaults';
+            import './cxsRender';
+            import './primus';
+            import * as React from 'react';
+            import { applyMiddleware, compose, createStore } from 'redux';
+            import { Provider } from 'react-redux';
+            import App from './Components/App';
+            import injectTapEventPlugin from 'react-tap-event-plugin';
+            import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+            import promiseMiddleware from 'redux-promise';
+            import ReactDOM from 'react-dom';
+            import reducer from './reducers';
+            `
         },
         {
-          code: `
-          import './axiosDefaults';
-          import './primus';
-          import './cxsRender';
-          `,
-          output: `
-          import './axiosDefaults';
-          import './cxsRender';
-          import './primus';
-          `,
-          errors: [{
-            expectedError,
-          }],
-          options: ignoreCaseArgs,
+            code: `
+            import './axiosDefaults';
+            import './primus';
+            import './cxsRender';
+            `,
+            output: `
+            import './axiosDefaults';
+            import './cxsRender';
+            import './primus';
+            `,
+            errors: [expectedError],
+            options: ignoreCaseArgs,
         },
 
         // Sort only consecutive imports
         {
             code:
-            "import D from 'foo.js';\n" +
-            "import B from 'bar.js';\n" +
-            "\n" +
-            "import A from 'baz.js';",
+                "import D from 'foo.js';\n" +
+                "import B from 'bar.js';\n" +
+                "\n" +
+                "import A from 'baz.js';",
             output:
-            "import B from 'bar.js';\n" +
-            "import D from 'foo.js';\n" +
-            "\n" +
-            "import A from 'baz.js';",
-            errors: [{
-              expectedError,
-            }],
+                "import B from 'bar.js';\n" +
+                "import D from 'foo.js';\n" +
+                "\n" +
+                "import A from 'baz.js';",
+            errors: [expectedError],
         },
         {
             code:
-`
+                `
 import { createWriteStream, promises as fs } from 'fs';
 import { nodeCrypto, Random } from 'random-js';
 import { resize } from 'easyimage';
@@ -544,7 +540,7 @@ import path from 'path';
 import crypto from 'crypto';
 `,
             output:
-`
+                `
 import { createWriteStream, promises as fs } from 'fs';
 import { nodeCrypto, Random } from 'random-js';
 import { resize } from 'easyimage';
@@ -553,18 +549,16 @@ import config from './config';
 import crypto from 'crypto';
 import path from 'path';
 `,
-          options: ignoreCaseArgs,
-          errors: [{
-                expectedError,
-            }],
+            options: ignoreCaseArgs,
+            errors: [expectedError],
         }
     ]
 };
 
 RuleTester.setDefaultConfig({
     parserOptions: {
-      sourceType: 'module',
-      ecmaVersion: 6,
+        sourceType: 'module',
+        ecmaVersion: 6,
     }
 });
 
@@ -580,8 +574,8 @@ ruleTester.run("sort-imports - babel-eslint", rule, fixtures);
 RuleTester.setDefaultConfig({
     parser: require.resolve('@typescript-eslint/parser'),
     parserOptions: {
-      sourceType: 'module',
-      ecmaVersion: 6,
+        sourceType: 'module',
+        ecmaVersion: 6,
     }
 });
 ruleTester = new RuleTester();
