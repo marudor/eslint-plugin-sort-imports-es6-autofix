@@ -60,6 +60,12 @@ module.exports = {
             initialSource = null,
             allDeclarations = sourceCode.ast.body.filter(n => n.type === 'ImportDeclaration');
 
+        const svelteScriptElement = sourceCode.ast.body.filter(n => n.type === 'SvelteScriptElement');
+
+        if (svelteScriptElement[0]) {
+            allDeclarations = svelteScriptElement[0].body.filter(n => n.type === 'ImportDeclaration');
+        }
+
         /**
          * Gets the used member syntax style.
          *
